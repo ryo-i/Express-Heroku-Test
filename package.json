@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "ejs": "^2.7.4",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "pg": "^8.4.1"
   },
   "devDependencies": {
     "got": "^11.3.0",
