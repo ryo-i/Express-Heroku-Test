@@ -29,12 +29,25 @@ express()
       res.send("Error " + err);
     }
   })
+  .get('/dbTest', async (req, res) => {
+    try {
+      const client = await pool.connect()
+      const result = await client.query('SELECT * FROM member');
+      const name = result.rows[0].name;
+      console.log('name->' + name);
+      res.send(name);
+      client.release();
+    } catch (err) {
+      console.error(err);
+      res.send("Error " + err);
+    }
+  })
   .get('/times', (req, res) => res.send(countHitsuji()))
   // .get('/env', (req, res) => res.send(process.env.TIMES))
   .get('/env', (req, res) => res.send(process.env.NAME))
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
-  countHitsuji = () => {
+  const countHitsuji = () => {
     let result = ''
     const times = process.env.TIMES || 5
     for (i = 0; i < times; i++) {
@@ -42,4 +55,4 @@ express()
       result += '羊が' + i + '匹 '
     }
     return result;
-  }
+  };
