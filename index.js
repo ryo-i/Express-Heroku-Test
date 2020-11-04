@@ -2,6 +2,11 @@ const express = require('express')
 const path = require('path')
 const PORT = process.env.PORT || 5000
 const { Pool } = require('pg');
+const bodyParser = require('body-parser');
+const app = express();
+
+// Fetch API設定
+const jsonParser = bodyParser.json();
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -12,8 +17,7 @@ const pool = new Pool({
   }
 });
 
-express()
-  .use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
@@ -44,8 +48,7 @@ express()
   })
   .get('/times', (req, res) => res.send(countHitsuji()))
   // .get('/env', (req, res) => res.send(process.env.TIMES))
-  .get('/env', (req, res) => res.send(process.env.NAME))
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`))
+  .get('/env', (req, res) => res.send(process.env.NAME));
 
   const countHitsuji = () => {
     let result = ''
@@ -56,3 +59,79 @@ express()
     }
     return result;
   };
+
+
+// Create
+app.post('/fetch', jsonParser, (req, res) => {
+  // const body = req.body;
+  const ikku = req.body.ikku;
+
+  // const insertSql = "INSERT INTO ikkulist SET ?" // SET->VALUES, ?->$1
+  const insertSql = "INSERT INTO ikkulist(ikku) VALUES ($1)"
+  const selectSql = 'SELECT * FROM ikkulist WHERE ikku = $1';
+
+  pool.query(insertSql, [ikku], (err, result) => {
+      if (err) throw err;
+      pool.query(selectSql, [ikku], (err, result) => {
+          if (err) throw err;
+          console.log(result.rows[0]);
+          res.send(result.rows[0]);
+      });
+  });
+});
+
+
+// Read
+app.get('/fetch', jsonParser, (req, res) => {
+  const deleteSql = "DELETE FROM ikkulist WHERE createday < now() - interval '1 day'";
+  const selectSql = "SELECT * FROM ikkulist";
+  
+  pool.query(deleteSql, (err, result) => {
+    if (err) throw err;
+    console.log(result);
+    pool.query(selectSql, (err, result) => {  
+      if (err) throw err;
+  
+      console.log(result.rows);
+      res.send(result.rows);
+    });
+  });
+});
+
+
+// Update
+app.put('/fetch', jsonParser, (req, res) => {
+  const id = req.body.id;
+  const ikku = req.body.ikku;
+
+  const updateSql = 'UPDATE ikkulist SET ikku = $1 WHERE id = $2';
+  const selectSql = 'SELECT * FROM ikkulist WHERE id = $1';
+
+  pool.query(updateSql, [ikku, id], (err, result) => {
+      if (err) throw err;
+      console.log(result.row);
+      pool.query(selectSql, [id], (err, result) => {
+          if (err) throw err;
+          console.log(result.rows[0]);
+          res.send(result.rows[0]);
+      });
+  });
+});
+
+
+// delete
+app.delete('/fetch', jsonParser, (req, res) => {
+  const id = req.body.id;
+
+  const deleteSql = 'DELETE FROM ikkulist WHERE id = $1';
+
+  pool.query(deleteSql, [id], (err, result) => {
+      if (err) throw err;
+      res.json({
+          "id": Number(id),
+          "ikku": "deleted"
+      });
+  });
+});
+
+app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
