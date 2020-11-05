@@ -63,10 +63,8 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 // Create
 app.post('/fetch', jsonParser, (req, res) => {
-  // const body = req.body;
   const ikku = req.body.ikku;
 
-  // const insertSql = "INSERT INTO ikkulist SET ?" // SET->VALUES, ?->$1
   const insertSql = "INSERT INTO ikkulist(ikku) VALUES ($1)"
   const selectSql = 'SELECT * FROM ikkulist WHERE ikku = $1';
 
