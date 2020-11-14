@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ExpressでHerokuのPstgreSQLとbody-parser連携(GitHub)</title>
+    <link rel="stylesheet" href="stylesheets/fetch_crud.css">
+</head>
+<body>
+    <section>
+        <h1>今日の一句</h1>
+            <section>
+                <h2>一句詠む</h2>
+                    <input type="text" name="ikku" size="30" maxlength="30" class="postIkku">
+                    <input type="button" value="送信" class="postBtn">      
+            </section>
+            <section>
+                <h2>過去の一句</h2>
+                <ul class="ikkuList"></ul> 
+                <p>※注：テストページのため明日になったら消えちゃいます！</p>
+            </section>
+    </section>
+    <script src="js/fetch_crud_github.js"></script>
+</body>
+</html>
