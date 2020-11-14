@@ -12,11 +12,11 @@ https://www.i-ryo.com/entry/2020/11/05/071807
 
 https://qiita.com/i-ryo/items/d7416e0c4a6035c30288
 
-# GitHub Pages
-https://ryo-i.github.io/Express-Heroku-Test/
-
-# Heroku
+# Heroku版
 https://aqueous-mountain-80366.herokuapp.com
+
+# GitHub Pages版
+https://ryo-i.github.io/Express-Heroku-Test/public/
 
 # Heroku スターターガイド (Node.js)
 
