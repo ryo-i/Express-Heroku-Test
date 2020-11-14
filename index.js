@@ -1,9 +1,15 @@
-const express = require('express')
-const path = require('path')
-const PORT = process.env.PORT || 5000
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const PORT = process.env.PORT || 5000;
 const { Pool } = require('pg');
 const bodyParser = require('body-parser');
 const app = express();
+
+// CORS設定
+const corsOptions = {
+  origin: 'https://ryo-i.github.io'
+}
 
 // Fetch API設定
 const jsonParser = bodyParser.json();
@@ -17,7 +23,7 @@ const pool = new Pool({
   }
 });
 
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public')),cors(corsOptions))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
